@@ -5,15 +5,15 @@ require "omniauth-taobao/version"
 Gem::Specification.new do |s|
   s.name        = "omniauth-taobao"
   s.version     = Omniauth::Taobao::VERSION
-  s.authors     = ["Scott Ballantyne"]
-  s.email       = ["ussballantyne@gmail.com"]
+  s.authors     = ["Yang Fei"]
+  s.email       = ["cdredfox@gmail.com"]
   s.homepage    = ""
   s.summary     = %q{an omniauth strategy for taobao}
   s.description = %q{an omniauth strategy for taobao}
 
   s.rubyforge_project = "omniauth-taobao"
-  s.add_dependency 'omniauth', '~> 1.0.0.rc2'
-  s.add_dependency 'omniauth-oauth2', '~> 1.0.0.rc2'
+  s.add_dependency 'omniauth', '~> 1.1.1'
+  s.add_dependency 'omniauth-oauth2', '~> 1.1.1'
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
