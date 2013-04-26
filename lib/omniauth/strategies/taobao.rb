@@ -8,10 +8,10 @@ module OmniAuth
       token_url='https://oauth.tbsandbox.com/token'
       
 
-      if Rails.env.production?
-        authorize_url='https://oauth.taobao.com/authorize'
-        token_url='https://oauth.taobao.com/token' 
-      end
+      #if Rails.env.production?
+      #  authorize_url='https://oauth.taobao.com/authorize'
+      #  token_url='https://oauth.taobao.com/token' 
+      #end
 
       option :client_options, {
         :authorize_url => authorize_url,
