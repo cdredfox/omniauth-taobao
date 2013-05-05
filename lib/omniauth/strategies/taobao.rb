@@ -9,8 +9,8 @@ module OmniAuth
       
 
       if Rails.env.production?
-        # authorize_url='https://oauth.taobao.com/authorize'
-        # token_url='https://oauth.taobao.com/token' 
+        authorize_url='https://oauth.taobao.com/authorize'
+        token_url='https://oauth.taobao.com/token' 
       end
 
       option :client_options, {
@@ -48,7 +48,7 @@ module OmniAuth
         }
         api_url='https://gw.api.tbsandbox.com/router/rest'
         if Rails.env.production?
-          # api_url = 'https://eco.taobao.com/router/rest'  
+          api_url = 'https://eco.taobao.com/router/rest'  
         end
         uri = URI.parse(api_url)
         uri.query = URI.encode_www_form(query_param)
