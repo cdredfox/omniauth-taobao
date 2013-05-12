@@ -24,29 +24,46 @@ module OmniAuth
         super
       end
 
-      uid { raw_info['uid'] }
+      uid { buyer_raw_info['user_id'] }
 
       info do
         {
-          'uid' => raw_info['uid'],
-          'nickname' => raw_info['nick'],
-          'email' => raw_info['email'],
-          'user_info' => raw_info,
+          'uid' => buyer_raw_info['user_id'],
+          'nickname' => buyer_raw_info['nick'],
+          #'email' => raw_info['email'],
+          'buyer_user_info' => buyer_raw_info,
+          'seller_user_info'=> seller_raw_info,
           'extra' => {
-            'user_hash' => raw_info,
+            'buyer_user_hash' => buyer_raw_info,
+            'seller_user_hash'=>seller_raw_info,
           },
         }
       end
 
-      def raw_info
+
+      def seller_raw_info
         query_param = {
-          :fields => 'user_id,uid,nick,sex,buyer_credit,seller_credit,location,created,last_visit,birthday,type,status,alipay_no,alipay_account,alipay_account,consumer_protection,alipay_bind',
+          :fields => 'user_id,nick,sex,seller_credit,type,has_more_pic,item_img_num,item_img_size,prop_img_num,prop_img_size,auto_repost,promoted_type,status,alipay_bind,consumer_protection,avatar,liangpin,sign_food_seller_promise,has_shop,is_lightning_consignment,has_sub_stock,is_golden_seller,vip_info,magazine_subscribe,vertical_market,online_gaming',
           :format => 'json',
-          #:method => 'taobao.user.get',
           :method=>'taobao.user.seller.get',
           :access_token => @access_token.token,
           :v => '2.0'
         }
+        return raw_info(query_param,'user_seller_get_response')
+      end
+
+      def buyer_raw_info
+        query_param = {
+          :fields => 'user_id,nick,sex,buyer_credit,avatar,has_shop,vip_info',
+          :format => 'json',
+          :method=>'taobao.user.buyer.get',
+          :access_token => @access_token.token,
+          :v => '2.0'
+        }
+        return raw_info(query_param)      
+      end
+
+      def raw_info(query_param,result_key='user_buyer_get_response')
         api_url='https://gw.api.tbsandbox.com/router/rest'
         if Rails.env.production?
           api_url = 'https://eco.taobao.com/router/rest'  
@@ -58,12 +75,10 @@ module OmniAuth
         http.verify_mode = OpenSSL::SSL::VERIFY_NONE
         request = Net::HTTP::Get.new(uri.request_uri)
         res = http.request(request)
-        @raw_info ||= MultiJson.decode(res.body)['user_seller_get_response']['user']
+        @raw_info ||= MultiJson.decode(res.body)[result_key]['user']
       rescue ::Errno::ETIMEDOUT
         raise ::Timeout::Error
       end
-      
- 
     end
   end
 end
