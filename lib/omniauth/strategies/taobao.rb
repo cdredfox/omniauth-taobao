@@ -58,7 +58,7 @@ module OmniAuth
         http.verify_mode = OpenSSL::SSL::VERIFY_NONE
         request = Net::HTTP::Get.new(uri.request_uri)
         res = http.request(request)
-        @raw_info ||= MultiJson.decode(res.body)['user_get_response']['user']
+        @raw_info ||= MultiJson.decode(res.body)['user_seller_get_response']['user']
       rescue ::Errno::ETIMEDOUT
         raise ::Timeout::Error
       end
