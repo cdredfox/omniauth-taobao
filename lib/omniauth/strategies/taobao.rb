@@ -4,6 +4,8 @@ module OmniAuth
   module Strategies
     class Taobao < OmniAuth::Strategies::OAuth2
 
+      option :run_model,nil
+
       authorize_url='https://oauth.tbsandbox.com/authorize'
       token_url='https://oauth.tbsandbox.com/token'
       
@@ -12,6 +14,8 @@ module OmniAuth
         authorize_url='https://oauth.taobao.com/authorize'
         token_url='https://oauth.taobao.com/token' 
       end
+
+
 
       option :client_options, {
         :authorize_url => authorize_url,
@@ -24,46 +28,39 @@ module OmniAuth
         super
       end
 
-      uid { buyer_raw_info['user_id'] }
+      uid { raw_info['user_id'] }
 
       info do
         {
-          'uid' => buyer_raw_info['user_id'],
-          'nickname' => buyer_raw_info['nick'],
+          'uid' => raw_info['user_id'],
+          'nickname' => raw_info['nick'],
           #'email' => raw_info['email'],
-          'buyer_user_info' => buyer_raw_info,
-          'seller_user_info'=> seller_raw_info,
+          'user_info' => raw_info,
           'extra' => {
-            'buyer_user_hash' => buyer_raw_info,
-            'seller_user_hash'=>seller_raw_info,
+            'user_hash' => raw_info,
           },
         }
       end
+      
+      def raw_info
 
+        fields='user_id,nick,sex,buyer_credit,avatar,has_shop,vip_info'
+        api_method='taobao.user.buyer.get'
+        result_key='user_buyer_get_response'
+        if options[:run_model]=='seller' 
+          fields='user_id,nick,sex,seller_credit,type,has_more_pic,item_img_num,item_img_size,prop_img_num,prop_img_size,auto_repost,promoted_type,status,alipay_bind,consumer_protection,avatar,liangpin,sign_food_seller_promise,has_shop,is_lightning_consignment,has_sub_stock,is_golden_seller,vip_info,magazine_subscribe,vertical_market,online_gaming'
+          api_method='taobao.user.seller.get'
+          result_key='user_seller_get_response'
+        end
 
-      def seller_raw_info
         query_param = {
-          :fields => 'user_id,nick,sex,seller_credit,type,has_more_pic,item_img_num,item_img_size,prop_img_num,prop_img_size,auto_repost,promoted_type,status,alipay_bind,consumer_protection,avatar,liangpin,sign_food_seller_promise,has_shop,is_lightning_consignment,has_sub_stock,is_golden_seller,vip_info,magazine_subscribe,vertical_market,online_gaming',
-          :format => 'json',
-          :method=>'taobao.user.seller.get',
-          :access_token => @access_token.token,
-          :v => '2.0'
+            :fields => fields,
+            :format => 'json',
+            :method=>api_method,
+            :access_token => @access_token.token,
+            :v => '2.0'
         }
-        return raw_info(query_param,'user_seller_get_response')
-      end
 
-      def buyer_raw_info
-        query_param = {
-          :fields => 'user_id,nick,sex,buyer_credit,avatar,has_shop,vip_info',
-          :format => 'json',
-          :method=>'taobao.user.buyer.get',
-          :access_token => @access_token.token,
-          :v => '2.0'
-        }
-        return raw_info(query_param)      
-      end
-
-      def raw_info(query_param,result_key='user_buyer_get_response')
         api_url='https://gw.api.tbsandbox.com/router/rest'
         if Rails.env.production?
           api_url = 'https://eco.taobao.com/router/rest'  
