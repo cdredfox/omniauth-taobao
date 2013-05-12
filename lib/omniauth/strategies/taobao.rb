@@ -42,7 +42,8 @@ module OmniAuth
         query_param = {
           :fields => 'user_id,uid,nick,sex,buyer_credit,seller_credit,location,created,last_visit,birthday,type,status,alipay_no,alipay_account,alipay_account,consumer_protection,alipay_bind',
           :format => 'json',
-          :method => 'taobao.user.get',
+          #:method => 'taobao.user.get',
+          :method=>'taobao.user.seller.get',
           :access_token => @access_token.token,
           :v => '2.0'
         }
