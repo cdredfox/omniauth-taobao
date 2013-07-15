@@ -65,6 +65,8 @@ module OmniAuth
         if Rails.env.production?
           api_url = 'https://eco.taobao.com/router/rest'  
         end
+        puts api_url
+        puts @access_token.token
         uri = URI.parse(api_url)
         uri.query = URI.encode_www_form(query_param)
         http = Net::HTTP.new(uri.host, uri.port)
@@ -72,6 +74,9 @@ module OmniAuth
         http.verify_mode = OpenSSL::SSL::VERIFY_NONE
         request = Net::HTTP::Get.new(uri.request_uri)
         res = http.request(request)
+        puts result_key
+        puts res.body
+        puts MultiJson.decode(res.body)[result_key]
         @raw_info ||= MultiJson.decode(res.body)[result_key]['user']
       rescue ::Errno::ETIMEDOUT
         raise ::Timeout::Error
