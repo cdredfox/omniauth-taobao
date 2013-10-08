@@ -15,7 +15,7 @@ module OmniAuth
         token_url='https://oauth.taobao.com/token' 
       end
 
-
+      option :provider_ignores_state, true
 
       option :client_options, {
         :authorize_url => authorize_url,
